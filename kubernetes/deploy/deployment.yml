@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zero-back-alex-test
+spec:
+  replicas: 1
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: zero-back-alex-test
+  template:
+    spec:
+      containers:
+        - name: zero-back-alex-test
+          image: fake-image
+          resources:
+            requests:
+              memory: 128Mi
+              cpu: 0.1
+            limits:
+              memory: 256Mi
+              cpu: 0.5
+          ports:
+            - containerPort: 80
+              name: http
+          envFrom:
+          - configMapRef:
+              name: zero-back-alex-test-config
+          readinessProbe:
+            httpGet:
+              port: http
+              path: /
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 2
